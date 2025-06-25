@@ -20,7 +20,7 @@ export const register =async(req:Request, res:Response)=> {
         res.status(500).json({message: "registeration failed", error: err.message});
     }
 };
-const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
     try {
         const {email, password} = req.body;
         const user = await User.findOne({email: email});
