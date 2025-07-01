@@ -3,6 +3,53 @@ import Order from '../models/order.model';
 import Product from '../models/product.model';
 import Cart from '../models/cart.model';
 
+export const trackOrderStatus = async (req: Request, res: Response) => {
+    try {
+        const orderId = req.params.id;
+        const userId = req.user?.id;
+
+        const order = await Order.findOne({ _id: orderId, userId });
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json({
+            status: order.status,
+            trackingStatus: order.trackingStatus,
+            estimatedDeliveryTime: order.estimatedDeliveryTime,
+            orderedAt: order.orderedAt,
+            deliveredAt: order.deliveredAt || null,
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err });
+    }
+};
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+    try {
+        const { status, trackingStatus, estimatedDeliveryTime } = req.body;
+        const orderId = req.params.id;
+
+        const order = await Order.findById(orderId);
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+
+        if (status) order.status = status;
+        if (trackingStatus) order.trackingStatus = trackingStatus;
+        if (estimatedDeliveryTime) order.estimatedDeliveryTime = new Date(estimatedDeliveryTime);
+
+        if (status === 'Delivered') {
+            order.deliveredAt = new Date();
+            order.trackingStatus = 'Order Delivered';
+        }
+
+        await order.save();
+
+        res.status(200).json({ message: 'Order status updated', order });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err });
+    }
+};
+
 export const placeOrder = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     const { address } = req.body;

@@ -14,7 +14,10 @@ export interface IOrder extends Document {
     totalAmount: number;
     address: string;
     status: 'Pending' | 'Shipped' | 'Delivered' | 'Cancelled';
+    trackingStatus: string;
+    estimatedDeliveryTime?: Date;
     orderedAt: Date;
+    deliveredAt?: Date;
 }
 
 
@@ -31,8 +34,15 @@ const orderSchema = new Schema<IOrder>({
     ],
     totalAmount: { type: Number, required: true },
     address: { type: String, required: true },
-    status: { type: String, enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'], default: 'Pending' },
+    status: { type: String, enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled','Out for Delivery'], default: 'Pending' },
+    trackingStatus: {
+        type: String,
+        default: 'Order Placed',
+    },
+    estimatedDeliveryTime: { type: Date },
     orderedAt: { type: Date, default: Date.now },
+    deliveredAt: { type: Date },
 });
+
 
 export default mongoose.model<IOrder>('Order', orderSchema);
