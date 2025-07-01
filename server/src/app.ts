@@ -6,6 +6,7 @@ import connectDB from "./config/db";
 // Routes
 import authRoutes from "./routes/auth.routes";
 import cartRoutes from "./routes/cart.routes";
+import orderRoutes from "./routes/order.routes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ connectDB();
 // API Routes
 app.use("/api/auth", authRoutes);     // register, login
 app.use("/api/cart", cartRoutes);     // cart routes (protected by auth middleware)
+app.use('/api/orders', orderRoutes);
 
 // Base route
 app.get("/", (_req, res) => {
