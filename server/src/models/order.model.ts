@@ -10,7 +10,12 @@ interface IOrderItem {
 
 export interface IOrder extends Document {
     userId: mongoose.Types.ObjectId;
-    items: IOrderItem[];
+    user: Types.ObjectId;
+    items: {
+        product: Types.ObjectId;
+        quantity: number;
+    }[];
+
     totalAmount: number;
     address: string;
     status: 'Pending' | 'Shipped' | 'Delivered' | 'Cancelled';
@@ -18,6 +23,8 @@ export interface IOrder extends Document {
     estimatedDeliveryTime?: Date;
     orderedAt: Date;
     deliveredAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 
