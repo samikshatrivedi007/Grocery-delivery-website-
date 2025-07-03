@@ -26,7 +26,8 @@ export const login = async (req: Request, res: Response) => {
         const user = await User.findOne({email: email});
         if (!user) return res.status(401).json({messsage: 'Invalid credentials'});
         const ismatch = await bcrypt.compare(password, user.password);
-        if (!ismatch) return res.status(401).json({messsage: 'Invalid credentials'});
+        if (!ismatch) return res.status(401).json({messsage: 'Invalid credentials'})
+
         const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '7d'});
         res.status(201).json({message: "User login successful", token, user});
     } catch (err: any) {
